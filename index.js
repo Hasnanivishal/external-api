@@ -12,18 +12,21 @@ app.get("/topshow", async (req, res, next) => {
     try {
       
    console.log('started....');
-    const chromeOptions = await puppeteer.launch({
-      headless: true,
-      devtools: false,
-      ignoreHTTPSErrors: true,
-      slowMo: 0,
-      args: [
-         //"--incognito",
-         "--no-sandbox",
-         //"--single-process",
-         //"--no-zygote"
-        ],
-  });
+
+  const chromeOptions = {
+         headless: true,
+         devtools: false,
+         ignoreHTTPSErrors: true,
+         slowMo: 0,
+         args: [
+         "--no-sandboxx",
+         "--no-zygote",
+         "--disable-setuid-sandbox",
+         "--disable-accelerated-2d-canvas",
+         "--disable-dev-shm-usage",
+         "--proxy-server='direct://'",
+         "--proxy-bypass-list=*"]
+   };
 
     const UA = USER_AGENT;
     const browser = await puppeteer.launch(chromeOptions); 
