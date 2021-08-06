@@ -24,31 +24,34 @@ app.get("/topshow", async (req, res, next) => {
     const browser = await puppeteer.launch(chromeOptions);
     const page = await browser.newPage();
     console.log('calling the website....');
-    await page.goto('https://www.binged.com/streaming-premiere-dates/mimi-movie-streaming-online-watch-2/', {
+    await page.goto('https://www.binged.com/streaming-premiere-dates/indoo-ki-jawani-hindi-movie-streaming-online-watch/', {
         waitUntil: 'networkidle2',
     });
     console.log('called the website....');
     const textsArray = await page.evaluate(() => document.querySelector('body').innerHTML);
-    console.log('textsArray is ready....');
+    console.log('textsArray is ready....', textsArray);
     let abc = getData(textsArray);
-    console.log('abc is ready....', abc.length);
+    console.log('abc is ready....');
     let finalOutput = [];
 
-    for (let index = 0; index < 15; index++) {
-        finalOutput.push({
-            name: abc[index].name,
-            image: getCorrectImageUrl(abc[index].image)
-        });
-        //console.log('finalOutput for index is done', index);
+    if (abc.length == 20) {
+        for (let index = 0; index < 20; index++) {
+            finalOutput.push({
+                name: abc[index].name,
+                image: getCorrectImageUrl(abc[index].image)
+            });
+            console.log('finalOutput for index is done', index);
+        }
+    
+        console.log(finalOutput);
     }
-
-    //console.log(finalOutput);
+    
     await browser.close();
 
     return res.send(
         {
            status: 200,
-           result: textsArray
+           result: finalOutput
         }
      )
 
@@ -68,7 +71,7 @@ let getData = html => {
     data = [];
     const $ = cheerio.load(html);
     const htmlData = $('#td-outer-wrap > div.bng-container.c-bng-layout > div.c-bng-layout__sidebar > div.bng-widgets > div.c-bng-list-widget > div.c-bng-list-widget__items > a');
-    console.log('htmlData is ready....', htmlData);
+    
     htmlData.each(
        (div, elem) => {
           data.push(
