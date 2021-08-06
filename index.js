@@ -82,10 +82,8 @@ app.get("/topshow", async (req, res, next) => {
       });
   });
 
-
-
-    console.log('calling the website....');
-    await page.goto('https://www.binged.com/streaming-premiere-dates/indoo-ki-jawani-hindi-movie-streaming-online-watch/', {
+    console.log('calling the website....', page.isJavaScriptEnabled);
+    await page.goto('https://www.binged.com', {
         waitUntil: 'networkidle2',
     });
     console.log('called the website....');
