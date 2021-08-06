@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Hasnanivishal/external-api#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "puppeteer": "^10.2.0"
   }
 }
