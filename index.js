@@ -2,27 +2,80 @@ var express = require("express");
 var app = express();
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
-
+const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36';
+    
 app.listen(process.env.PORT || 3000, () => {
  console.log("Server running on port 3000");
 });
 
 app.get("/topshow", async (req, res, next) => {
     try {
-        console.log('started....');
-    const chromeOptions = {
-            //headless: true,
-            //defaultViewport: null,
-            args: [
-                //"--incognito",
-                "--no-sandbox",
-                //"--single-process",
-                //"--no-zygote"
-            ],
-    };
+      
+   console.log('started....');
+    const chromeOptions = await puppeteer.launch({
+      headless: true,
+      devtools: false,
+      ignoreHTTPSErrors: true,
+      slowMo: 0,
+      args: ['--disable-gpu','--no-sandbox','--no-zygote','--disable-setuid-sandbox','--disable-accelerated-2d-canvas','--disable-dev-shm-usage', "--proxy-server='direct://'", "--proxy-bypass-list=*"]
+  });
 
+    const UA = USER_AGENT;
     const browser = await puppeteer.launch(chromeOptions); 
     const page = await browser.newPage();
+
+    //Randomize viewport size
+    await page.setViewport({
+      width: 1920 + Math.floor(Math.random() * 100),
+      height: 3000 + Math.floor(Math.random() * 100),
+      deviceScaleFactor: 1,
+      hasTouch: false,
+      isLandscape: false,
+      isMobile: false,
+   });
+   await page.setUserAgent(UA);
+    await page.setJavaScriptEnabled(true);
+    await page.evaluateOnNewDocument(() => {
+      // Pass webdriver check
+      Object.defineProperty(navigator, 'webdriver', {
+          get: () => false,
+      });
+   });
+   await page.evaluateOnNewDocument(() => {
+         // Pass chrome check
+         window.chrome = {
+            runtime: {},
+            // etc.
+         };
+   });
+   await page.evaluateOnNewDocument(() => {
+      //pass plugins check
+      const originalQuery = window.navigator.permissions.query;
+      return window.navigator.permissions.query = (parameters) => (
+          parameters.name === 'notifications' ?
+              Promise.resolve({ state: Notification.permission }) :
+              originalQuery(parameters)
+      );
+  });
+
+  await page.evaluateOnNewDocument(() => {
+      // Overwrite the `plugins` property to use a custom getter.
+      Object.defineProperty(navigator, 'plugins', {
+          // This just needs to have `length > 0` for the current test,
+          // but we could mock the plugins too if necessary.
+          get: () => [1, 2, 3, 4, 5],
+      });
+  });
+
+  await page.evaluateOnNewDocument(() => {
+      // Overwrite the `plugins` property to use a custom getter.
+      Object.defineProperty(navigator, 'languages', {
+          get: () => ['en-US', 'en'],
+      });
+  });
+
+
+
     console.log('calling the website....');
     await page.goto('https://www.binged.com/streaming-premiere-dates/indoo-ki-jawani-hindi-movie-streaming-online-watch/', {
         waitUntil: 'networkidle2',
