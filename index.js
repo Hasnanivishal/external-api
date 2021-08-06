@@ -21,7 +21,7 @@ app.get("/topshow", async (req, res, next) => {
             ],
     };
 
-    const browser = await puppeteer.launch({ headless: false }); 
+    const browser = await puppeteer.launch(); 
     const page = await browser.newPage();
     console.log('calling the website....');
     await page.goto('https://www.binged.com/streaming-premiere-dates/indoo-ki-jawani-hindi-movie-streaming-online-watch/', {
