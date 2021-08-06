@@ -19,8 +19,8 @@ app.get("/topshow", async (req, res, next) => {
          ignoreHTTPSErrors: true,
          slowMo: 0,
          args: [
-         "--no-sandboxx",
-         "--no-zygote",
+         "--no-sandbox",
+         "--no--zygote",
          "--disable-setuid-sandbox",
          "--disable-accelerated-2d-canvas",
          "--disable-dev-shm-usage",
