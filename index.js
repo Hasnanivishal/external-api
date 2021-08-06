@@ -17,14 +17,12 @@ app.get("/topshow", async (req, res, next) => {
       devtools: false,
       ignoreHTTPSErrors: true,
       slowMo: 0,
-      args: ["--disable-gpu",
-      "--no-sandbox",
-      "--no-zygote",
-      "--disable-setuid-sandbox",
-      "--disable-accelerated-2d-canvas",
-      "--disable-dev-shm-usage",
-      "--proxy-server='direct://'",
-      "--proxy-bypass-list=*"]
+      args: [
+         //"--incognito",
+         "--no-sandbox",
+         //"--single-process",
+         //"--no-zygote"
+        ],
   });
 
     const UA = USER_AGENT;
